@@ -1,0 +1,133 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+check-postfix-mailqueue - Plugin to check the mailqueues of postfix.
+
+=head1 SYNOPSIS
+
+    check-postfix-mailqueue [ OPTIONS ]
+
+    check-postfix-mailqueue --help
+
+=head1 REPORTING BUGS
+
+Please report all bugs to <support(at)bloonix.de>.
+
+=head1 AUTHOR
+
+Jonny Schulz <support(at)bloonix.de>.
+
+=head1 POWERED BY
+
+     _    __ _____ _____ __  __ __ __   __
+    | |__|  |     |     |  \|  |__|\  \/  /
+    |  . |  |  |  |  |  |      |  | >    <
+    |____|__|_____|_____|__|\__|__|/__/\__\
+
+=head1 COPYRIGHT
+
+Copyright (C) 2011-2014 by Jonny Schulz. All rights reserved.
+
+=cut
+
+use strict;
+use warnings;
+use Bloonix::Plugin;
+
+# --------------------------------------------------
+# Plugin options
+# --------------------------------------------------
+
+my $plugin = Bloonix::Plugin->new(version => "0.3");
+
+$plugin->info(
+    "The spooldir of postfix is determined by",
+    "  postconf -h queue_directory"
+);
+
+$plugin->has_threshold(
+    keys => [qw(total incoming active deferred corrupt hold)]
+);
+
+$plugin->example(
+    description => join(" ",
+        "Check if the queue 'active' or 'deferred' has more than 5000/10000",
+        "mails and return a WARNING or CRITICAL"
+    ),
+    arguments => [
+        warning => "active:5000",
+        critical => "active:10000",
+        warning => "deferred:5000",
+        critical => "deferred:10000"
+    ]
+);
+
+# --------------------------------------------------
+# Parse options
+# --------------------------------------------------
+
+my $opt = $plugin->parse_options;
+my $spooldir = qx{postconf -h queue_directory 2>/dev/null} || "/var/spool/postfix";
+chomp $spooldir;
+$spooldir =~ s/^\s+//;
+$spooldir =~ s/\s+\z//;
+
+if (!-r "$spooldir/active") {
+    $plugin->exit(
+        status => "UNKNOWN",
+        message => "the spooldir '$spooldir/active' is not readable"
+    );
+}
+
+# ----------------------------------------------------
+# Function to count all files in a directory hierarchy
+# ----------------------------------------------------
+
+sub find {
+    my $dir   = shift;
+    my $count = 0;
+
+    if (opendir my $dh, $dir) {
+        while (my $file = readdir $dh) {
+            chomp($file);
+
+            if ($file =~ /^\w/) {
+                if (-f "$dir/$file") {
+                    $count++;
+                } elsif (-d "$dir/$file") {
+                    $count += &find("$dir/$file");
+                }
+            }
+        }
+        closedir $dh;
+    }
+
+    return $count;
+}
+
+# --------------------------------------------------
+# Get file count and check thresholds
+# --------------------------------------------------
+
+my $stat = { };
+
+foreach my $dir (qw/incoming active deferred corrupt hold/) {
+    $stat->{$dir} = &find("$spooldir/$dir");
+    $stat->{total} += $stat->{$dir};
+}
+
+# --------------------------------------------------
+# Check warning and critical
+# --------------------------------------------------
+
+my $result = $plugin->check_thresholds(
+    stats => $stat,
+    upshot_keys => [qw(total incoming active deferred corrupt hold)]
+);
+
+$plugin->exit(
+    status => $result->{status},
+    message => $result->{upshot},
+    stats => $stat
+);

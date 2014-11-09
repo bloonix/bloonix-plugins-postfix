@@ -1,0 +1,81 @@
+plugin {
+    id 47
+    plugin Postfix.Mailqueue
+    command check-postfix-mailqueue
+    datatype statistic
+    category System,Mail
+    abstract Postfix mailqueue check
+    description Check the mailqueue of Postfix.
+}
+
+statistic {
+    statkey total
+    alias Total
+    datatype bigint
+    description Number of total mails in queue.
+}
+
+statistic {
+    statkey incoming
+    alias Incoming
+    datatype bigint
+    description Number of mails in queue 'incoming'.
+}
+
+statistic {
+    statkey active
+    alias Active
+    datatype bigint
+    description Number of mails in queue 'active'.
+}
+
+statistic {
+    statkey deferred
+    alias Deferred
+    datatype bigint
+    description Number of mails in queue 'deferred'.
+}
+
+statistic {
+    statkey corrupt
+    alias Corrupt
+    datatype bigint
+    description Number of mails in queue 'corrupt'.
+}
+
+statistic {
+    statkey hold
+    alias Hold
+    datatype bigint
+    description Number of mails in queue 'hold'.
+}
+
+chart {
+    id 1
+    title Postfix mailqueue
+    options {
+        ylabel count
+        units null
+        chart-type area
+        series {
+            name incoming
+            color \#e9644a
+        }
+        series {
+            name active
+            color \#ffb244
+        }
+        series {
+            name deferred
+            color \#9a72ad
+        }
+        series {
+            name corrupt
+            color \#005467
+        }
+        series {
+            name hold
+            color \#2ba743
+        }
+    }
+}
