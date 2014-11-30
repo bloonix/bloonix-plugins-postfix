@@ -1,3 +1,9 @@
+bloonix-plugins-postfix (0.5-1) unstable; urgency=low
+
+    * Added the info that sudo is necessary to execute this plugin.
+
+ -- Jonny Schulz <js@bloonix.de>  Sun, 30 Nov 2014 19:38:01 +0100
+
 bloonix-plugins-postfix (0.4-1) unstable; urgency=low
 
     * Updated the license information.

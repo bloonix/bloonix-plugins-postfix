@@ -1,6 +1,6 @@
 Summary: Bloonix plugins for Postfix.
 Name: bloonix-plugins-postfix
-Version: 0.4
+Version: 0.5
 Release: 1%{dist}
 License: Commercial
 Group: Utilities/System
@@ -56,6 +56,8 @@ rm -rf %{buildroot}
 %doc %attr(0444, root, root) %{docdir}/LICENSE
 
 %changelog
+* Sun Nov 30 2014 Jonny Schulz <js@bloonix.de> - 0.5-1
+- Added the info that sudo is necessary to execute this plugin.
 * Mon Nov 03 2014 Jonny Schulz <js@bloonix.de> - 0.4-1
 - Updated the license information.
 * Tue Aug 26 2014 Jonny Schulz <js@bloonix.de> - 0.3-1
