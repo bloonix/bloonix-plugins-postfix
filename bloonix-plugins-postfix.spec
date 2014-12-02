@@ -1,6 +1,6 @@
 Summary: Bloonix plugins for Postfix.
 Name: bloonix-plugins-postfix
-Version: 0.5
+Version: 0.6
 Release: 1%{dist}
 License: Commercial
 Group: Utilities/System
@@ -59,14 +59,16 @@ rm -rf %{buildroot}
 %{blxdir}/plugins/check-*
 %{blxdir}/etc/plugins/plugin-*
 
-%dir %{blxdir}/sudoers.d
-%{blxdir}/sudoers.d/*
+%dir %{blxdir}/etc/sudoers.d
+%{blxdir}/etc/sudoers.d/*
 
 %dir %attr(0755, root, root) %{docdir}
 %doc %attr(0444, root, root) %{docdir}/ChangeLog
 %doc %attr(0444, root, root) %{docdir}/LICENSE
 
 %changelog
+* Tue Dec 02 2014 Jonny Schulz <js@bloonix.de> - 0.6-1
+- Fixed handling of sudo files.
 * Sun Nov 30 2014 Jonny Schulz <js@bloonix.de> - 0.5-1
 - Added the info that sudo is necessary to execute this plugin.
 * Mon Nov 03 2014 Jonny Schulz <js@bloonix.de> - 0.4-1

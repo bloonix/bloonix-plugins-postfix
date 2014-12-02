@@ -1,3 +1,9 @@
+bloonix-plugins-postfix (0.6-1) unstable; urgency=low
+
+    * Fixed handling of sudo files.
+
+ -- Jonny Schulz <js@bloonix.de>  Tue, 02 Dec 2014 23:29:49 +0100
+
 bloonix-plugins-postfix (0.5-1) unstable; urgency=low
 
     * Added the info that sudo is necessary to execute this plugin.
