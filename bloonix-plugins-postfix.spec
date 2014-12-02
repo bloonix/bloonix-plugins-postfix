@@ -37,6 +37,17 @@ mkdir -p ${RPM_BUILD_ROOT}%{docdir}
 install -c -m 0444 LICENSE ${RPM_BUILD_ROOT}%{docdir}/
 install -c -m 0444 ChangeLog ${RPM_BUILD_ROOT}%{docdir}/
 
+%post
+if [ ! -e "/etc/bloonix/agent/sudoers.d" ] ; then
+    mkdir -p /etc/bloonix/agent/sudoers.d
+    chown root:root /etc/bloonix/agent/sudoers.d
+    chmod 755 /etc/bloonix/agent/sudoers.d
+fi
+if [ ! -e "/etc/bloonix/agent/sudoers.d/check-postfix" ] ; then
+    cp -a /usr/lib/bloonix/etc/sudoers.d/check-postfix /etc/bloonix/agent/sudoers.d/
+    chmod 440 /etc/bloonix/agent/sudoers.d/check-postfix
+fi
+
 %clean
 rm -rf %{buildroot}
 
@@ -48,8 +59,8 @@ rm -rf %{buildroot}
 %{blxdir}/plugins/check-*
 %{blxdir}/etc/plugins/plugin-*
 
-%dir /etc/bloonix/agent/sudoers.d
-/etc/bloonix/agent/sudoers.d/*
+%dir %{blxdir}/sudoers.d
+%{blxdir}/sudoers.d/*
 
 %dir %attr(0755, root, root) %{docdir}
 %doc %attr(0444, root, root) %{docdir}/ChangeLog

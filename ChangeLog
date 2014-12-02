@@ -1,3 +1,7 @@
+bloonix-plugins-postfix (0.6) released at 2014-12-02
+
+    * Fixed handling of sudo files.
+
 bloonix-plugins-postfix (0.5) released at 2014-11-30
 
     * Added the info that sudo is necessary to execute this plugin.
