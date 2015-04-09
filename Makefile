@@ -6,6 +6,13 @@ default: build
 
 build:
 
+	for file in \
+		sudoers/check-postfix \
+	; do \
+		cp $$file.in $$file; \
+		sed -i "s!@@PREFIX@@!$(PREFIX)!g" $$file; \
+	done;
+
 install:
 	if test ! -e "$(PREFIX)/lib/bloonix/plugins" ; then \
 		mkdir -p $(PREFIX)/lib/bloonix/plugins; \
@@ -32,7 +39,11 @@ install:
 		chmod 755 $(PREFIX)/lib/bloonix/etc/sudoers.d; \
 	fi;
 
-	cp -a sudoers/* $(PREFIX)/lib/bloonix/etc/sudoers.d/;
-	chmod 440 $(PREFIX)/lib/bloonix/etc/sudoers.d/*;
+	for file in \
+		check-postfix \
+	; do \
+		cp -a sudoers/$$file $(PREFIX)/lib/bloonix/etc/sudoers.d/$$file; \
+		chmod 440 $(PREFIX)/lib/bloonix/etc/sudoers.d/$$file; \
+	done;
 
 clean:
