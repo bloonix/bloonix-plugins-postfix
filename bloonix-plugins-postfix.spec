@@ -13,6 +13,7 @@ BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Source0: http://download.bloonix.de/sources/%{name}-%{version}.tar.gz
+Requires: bloonix-agent
 Requires: bloonix-core
 Requires: curl
 AutoReqProv: no
@@ -43,10 +44,22 @@ if [ ! -e "/etc/bloonix/agent/sudoers.d" ] ; then
     chown root:root /etc/bloonix/agent/sudoers.d
     chmod 755 /etc/bloonix/agent/sudoers.d
 fi
-if [ ! -e "/etc/bloonix/agent/sudoers.d/check-postfix" ] ; then
-    cp -a /usr/lib/bloonix/etc/sudoers.d/check-postfix /etc/bloonix/agent/sudoers.d/
-    chmod 440 /etc/bloonix/agent/sudoers.d/check-postfix
+if [ ! -e "/etc/bloonix/agent/conf.d" ] ; then
+    mkdir -p /etc/bloonix/agent/conf.d
+    chown root:bloonix /etc/bloonix/agent/conf.d
+    chmod 750 /etc/bloonix/agent/conf.d
 fi
+for f in check-postfix ; do
+    if [ ! -e "/etc/bloonix/agent/sudoers.d/$f" ] ; then
+        cp -a /usr/lib/bloonix/etc/sudoers.d/$f /etc/bloonix/agent/sudoers.d/
+        chmod 440 /etc/bloonix/agent/sudoers.d/$f
+    fi
+    if [ ! -e "/etc/bloonix/agent/conf.d/$f" ] ; then
+        cp -a /usr/lib/bloonix/etc/conf.d/$f.conf /etc/bloonix/agent/conf.d/
+        chmod 640 /etc/bloonix/agent/conf.d/$f.conf
+        chown root:bloonix /etc/bloonix/agent/conf.d/$f.conf
+    fi
+done
 
 %clean
 rm -rf %{buildroot}
@@ -61,6 +74,9 @@ rm -rf %{buildroot}
 
 %dir %{blxdir}/etc/sudoers.d
 %{blxdir}/etc/sudoers.d/*
+
+%dir %{blxdir}/etc/conf.d
+%{blxdir}/etc/conf.d/*
 
 %dir %attr(0755, root, root) %{docdir}
 %doc %attr(0444, root, root) %{docdir}/ChangeLog
