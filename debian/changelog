@@ -1,3 +1,10 @@
+bloonix-plugins-postfix (0.7-1) unstable; urgency=low
+
+    * Added a configuration file with use_sudo for each check that
+      to executed via sudo.
+
+ -- Jonny Schulz <js@bloonix.de>  Fri, 14 Aug 2015 20:46:34 +0200
+
 bloonix-plugins-postfix (0.6-1) unstable; urgency=low
 
     * Fixed handling of sudo files.
