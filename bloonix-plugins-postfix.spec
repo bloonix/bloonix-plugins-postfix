@@ -1,6 +1,6 @@
 Summary: Bloonix plugins for Postfix.
 Name: bloonix-plugins-postfix
-Version: 0.8
+Version: 0.9
 Release: 1%{dist}
 License: Commercial
 Group: Utilities/System
@@ -15,6 +15,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Source0: http://download.bloonix.de/sources/%{name}-%{version}.tar.gz
 Requires: bloonix-core
 Requires: curl
+Requires: sudo
 AutoReqProv: no
 
 %description
@@ -38,27 +39,22 @@ install -c -m 0444 LICENSE ${RPM_BUILD_ROOT}%{docdir}/
 install -c -m 0444 ChangeLog ${RPM_BUILD_ROOT}%{docdir}/
 
 %post
-if [ ! -e "/etc/bloonix/agent/sudoers.d" ] ; then
-    mkdir -p /etc/bloonix/agent/sudoers.d
-    chown root:root /etc/bloonix/agent/sudoers.d
-    chmod 755 /etc/bloonix/agent/sudoers.d
-fi
 if [ ! -e "/etc/bloonix/agent/conf.d" ] ; then
     mkdir -p /etc/bloonix/agent/conf.d
     chown root:bloonix /etc/bloonix/agent/conf.d
     chmod 750 /etc/bloonix/agent/conf.d
 fi
-for f in check-postfix ; do
-    if [ ! -e "/etc/bloonix/agent/sudoers.d/$f" ] ; then
-        cp -a /usr/lib/bloonix/etc/sudoers.d/$f /etc/bloonix/agent/sudoers.d/
-        chmod 440 /etc/bloonix/agent/sudoers.d/$f
-    fi
-    if [ ! -e "/etc/bloonix/agent/conf.d/$f" ] ; then
-        cp -a /usr/lib/bloonix/etc/conf.d/$f.conf /etc/bloonix/agent/conf.d/
-        chmod 640 /etc/bloonix/agent/conf.d/$f.conf
-        chown root:bloonix /etc/bloonix/agent/conf.d/$f.conf
-    fi
-done
+
+if [ ! -e "/etc/sudoers.d/60_bloonix_check_postfix_mailqueue" ] ; then
+    cp -a /usr/lib/bloonix/etc/sudoers.d/60_bloonix_check_postfix_mailqueue /etc/sudoers.d/60_bloonix_check_postfix_mailqueue
+    chmod 440 /etc/sudoers.d/60_bloonix_check_postfix_mailqueue
+fi
+
+if [ ! -e "/etc/bloonix/agent/conf.d/check-postfix-mailqueue.conf" ] ; then
+    cp -a /usr/lib/bloonix/etc/conf.d/check-postfix-mailqueue.conf /etc/bloonix/agent/conf.d/
+    chmod 640 /etc/bloonix/agent/conf.d/check-postfix-mailqueue.conf
+    chown root:bloonix /etc/bloonix/agent/conf.d/check-postfix-mailqueue.conf
+fi
 
 %clean
 rm -rf %{buildroot}
@@ -82,6 +78,8 @@ rm -rf %{buildroot}
 %doc %attr(0444, root, root) %{docdir}/LICENSE
 
 %changelog
+* Tue Aug 18 2015 Jonny Schulz <js@bloonix.de> - 0.9-1
+- Moved all sudo files to /etc/sudoers.d.
 * Tue Aug 18 2015 Jonny Schulz <js@bloonix.de> - 0.8-1
 - Kicked the dependency of bloonix-agent.
 * Fri Aug 14 2015 Jonny Schulz <js@bloonix.de> - 0.7-1

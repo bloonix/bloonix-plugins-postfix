@@ -6,12 +6,8 @@ default: build
 
 build:
 
-	for file in \
-		sudoers/check-postfix \
-	; do \
-		cp $$file.in $$file; \
-		sed -i "s!@@PREFIX@@!$(PREFIX)!g" $$file; \
-	done;
+	cp sudoers/60_bloonix_check_postfix_mailqueue.in sudoers/60_bloonix_check_postfix_mailqueue; \
+	sed -i "s!@@PREFIX@@!$(PREFIX)!g" sudoers/60_bloonix_check_postfix_mailqueue;
 
 install:
 	if test ! -e "$(PREFIX)/lib/bloonix/plugins" ; then \
@@ -44,13 +40,9 @@ install:
 		chmod 755 $(PREFIX)/lib/bloonix/etc/conf.d; \
 	fi;
 
-	for file in \
-		check-postfix \
-	; do \
-		cp -a sudoers/$$file $(PREFIX)/lib/bloonix/etc/sudoers.d/$$file; \
-		chmod 440 $(PREFIX)/lib/bloonix/etc/sudoers.d/$$file; \
-		cp -a sudoers/$$file.conf $(PREFIX)/lib/bloonix/etc/conf.d/$$file.conf; \
-		chmod 644 $(PREFIX)/lib/bloonix/etc/conf.d/$$file.conf; \
-	done;
+	cp -a sudoers/60_bloonix_check_postfix_mailqueue $(PREFIX)/lib/bloonix/etc/sudoers.d/60_bloonix_check_postfix_mailqueue; \
+	chmod 644 $(PREFIX)/lib/bloonix/etc/sudoers.d/60_bloonix_check_postfix_mailqueue; \
+	cp -a sudoers/check-postfix-mailqueue.conf $(PREFIX)/lib/bloonix/etc/conf.d/check-postfix-mailqueue.conf; \
+	chmod 644 $(PREFIX)/lib/bloonix/etc/conf.d/check-postfix-mailqueue.conf;
 
 clean:
