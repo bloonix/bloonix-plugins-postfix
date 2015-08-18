@@ -1,6 +1,6 @@
 Summary: Bloonix plugins for Postfix.
 Name: bloonix-plugins-postfix
-Version: 0.7
+Version: 0.8
 Release: 1%{dist}
 License: Commercial
 Group: Utilities/System
@@ -13,7 +13,6 @@ BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Source0: http://download.bloonix.de/sources/%{name}-%{version}.tar.gz
-Requires: bloonix-agent
 Requires: bloonix-core
 Requires: curl
 AutoReqProv: no
@@ -83,6 +82,8 @@ rm -rf %{buildroot}
 %doc %attr(0444, root, root) %{docdir}/LICENSE
 
 %changelog
+* Tue Aug 18 2015 Jonny Schulz <js@bloonix.de> - 0.8-1
+- Kicked the dependency of bloonix-agent.
 * Fri Aug 14 2015 Jonny Schulz <js@bloonix.de> - 0.7-1
 - Added a configuration file with use_sudo for each check that
   to executed via sudo.

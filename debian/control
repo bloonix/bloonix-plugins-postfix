@@ -8,6 +8,6 @@ Homepage: http://www.bloonix.de/
 
 Package: bloonix-plugins-postfix
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, bloonix-agent, bloonix-core
+Depends: ${shlibs:Depends}, ${misc:Depends}, bloonix-core
 Description: Bloonix Plugins Postfix
  bloonix-plugins-postfix provides plugins to monitor postfix.
